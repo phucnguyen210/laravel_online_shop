@@ -92,12 +92,8 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h2 class="h4 mb-3">Media</h2>								
-                                            <div id="image" class="dropzone dz-clickable">
-                                                <div class="dz-message needsclick">    
-                                                    <img src="{{ asset($products->img) }}" alt="Product Image" class="img-thumbnail" width="50">
-                                                    <input type="file" name="img" class="form-control">
-                                                </div>
-                                            </div>
+                                                    <br>Drop files here or click to upload.<br><br>   
+                                                    <input type="file" name="image" class="form-control">                                         
                                         </div>	                                                                      
                                     </div>
                                     <div class="card mb-3">
@@ -179,7 +175,7 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label for="category">Sub category</label>
-                                                <select name="sub_category" id="sub_category" class="form-control">
+                                                <select name="sub_category_id" id="sub_category" class="form-control">
                                                     @foreach($subcategories as $subcategory)
                                                         <option value="{{ $subcategory->id }}">{{ $subcategory->name }}</option>
                                                     @endforeach

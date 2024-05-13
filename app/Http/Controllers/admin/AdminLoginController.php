@@ -8,6 +8,8 @@ use Illuminate\Auth\Events\Logout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
+use Dotenv\Validator;
+use Illuminate\Support\Facades\Redis;
 
 class AdminLoginController extends Controller
 {
@@ -36,19 +38,13 @@ class AdminLoginController extends Controller
             return back()->withInput()->withErrors(['email' => 'Invalid email or password']);
         }
     }
-
-
-
+    
     public function logout()
     {
 
         Auth::logout();
         return redirect()->route('admin');
     }
-
-
-
-
 
 
     public function discount()

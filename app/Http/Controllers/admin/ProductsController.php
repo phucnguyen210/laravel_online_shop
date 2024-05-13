@@ -21,6 +21,10 @@ class ProductsController extends Controller
     public function products()
     {
         $products = Products::all();
+        foreach($products as $product){
+        // dd($product->img);
+            
+        }
 
         return view('admin.products', compact('products'));
     }
@@ -36,22 +40,20 @@ class ProductsController extends Controller
 
     public function store(Request $request)
     {
-        
+
         $validatedData = $request->validate([
             'name' => 'required|max:255',
         ]);
-        // $imageName = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName =  $image->getClientOriginalName();
             $image->storeAs('public/img', $imageName);
         }
 
-        // Lưu đường dẫn của ảnh vào cơ sở dữ liệu
         $product = new Products;
         $product->name = $validatedData['name'];
         $product->description = $request['description'];
-        $product->img = 'storage/img/' . $imageName; // Đường dẫn của ảnh trong thư mục storage/app/public/img
+        $product->img = 'storage/img/' . $imageName;
         $product->price = $request['price'];
         $product->quantity = $request['quantity'];
         $product->code = mt_rand(100000, 999999);
@@ -78,22 +80,31 @@ class ProductsController extends Controller
     public function update(Request $request, $id)
     {
         $product = Products::findOrFail($id);
+        
         if ($request->hasFile('img')) {
             $image = $request->file('img');
+            
             $imageName = time() . '_' . $image->getClientOriginalName();
+            
             $image->storeAs('public/img', $imageName);
+            $product->img = 'storage/img/' . $imageName;
         }
-
+        
+        
         $product->name = $request['name'];
         $product->description = $request['description'];
-        $product->img = 'storage/img/' . $imageName;
         $product->price = $request['price'];
         $product->code = mt_rand(100000, 999999);
         $product->status = $request['status'];
         $product->brand_id = $request['brand_id'];
         $product->category_id = $request['category_id'];
         $product->subcategory_id = $request['sub_category_id'];
+        $product->subcategory_id = $request['sub_category_id'];
+    
+        // Lưu các thay đổi vào cơ sở dữ liệu
         $product->save();
+        
+        // Chuyển hướng người dùng đến trang danh sách sản phẩm sau khi cập nhật thành công
         return redirect()->route('admin.products');
     }
 
