@@ -4,9 +4,9 @@
         <div class="container">
             <div class="light-font">
                 <ol class="breadcrumb primary-color mb-0">
-                    <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="white-text" href="{{route('home')}}">Home</a></li>
                     <li class="breadcrumb-item"><a class="white-text" href="#">Shop</a></li>
-                    <li class="breadcrumb-item">Your product name</li>
+                    <li class="breadcrumb-item">{{$product->name}}</li>
                 </ol>
             </div>
         </div>
@@ -18,18 +18,19 @@
                 <div class="col-md-5">
                     <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner bg-light">
-                            <div class="carousel-item">
-                                <img class="w-100 h-100" src="images/product-1.jpg" alt="Image">
-                            </div>
-                            <div class="carousel-item active">
-                                <img class="w-100 h-100" src="images/product-2.jpg" alt="Image">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="w-100 h-100" src="images/product-3.jpg" alt="Image">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="w-100 h-100" src="images/product-4.jpg" alt="Image">
-                            </div>
+                            
+                                <div class="carousel-item">
+                                    <img class="w-100 h-100" src="{{asset($product->img)}}" alt="Image">
+                                </div>
+                                <div class="carousel-item active">
+                                    <img class="w-100 h-100" src="{{asset($product->img)}}" alt="Image">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="w-100 h-100" src="{{asset($product->img)}}" alt="Image">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="w-100 h-100" src="{{asset($product->img)}}" alt="Image">
+                                </div>
                         </div>
                         <a class="carousel-control-prev" href="#product-carousel" data-bs-slide="prev">
                             <i class="fa fa-2x fa-angle-left text-dark"></i>
@@ -41,7 +42,7 @@
                 </div>
                 <div class="col-md-7">
                     <div class="bg-light right">
-                        <h1>Your Product Name Here</h1>
+                        <h1>{{$product->name}}</h1>
                         <div class="d-flex mb-3">
                             <div class="text-primary mr-2">
                                 <small class="fas fa-star"></small>
@@ -53,10 +54,10 @@
                             <small class="pt-1">(99 Reviews)</small>
                         </div>
                         <h2 class="price text-secondary"><del>$400</del></h2>
-                        <h2 class="price ">$300</h2>
+                        <h2 class="price ">${{$product->price}}</h2>
 
                         <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis officiis dolor aut nihil iste porro ullam repellendus inventore voluptatem nam veritatis exercitationem doloribus voluptates dolorem nobis voluptatum qui, minus facere.</p>
-                        <a href="cart.php" class="btn btn-dark"><i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART</a>
+                        <a href="{{route('cart.add',$product->id)}}" class="btn btn-dark"><i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART</a>
                     </div>
                 </div>
 
@@ -75,10 +76,9 @@
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-                                <p>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi.
-                                </p>
+                                {!! $product->description !!}
                             </div>
+                            
                             <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
                             <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi.</p>
                             </div>

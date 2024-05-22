@@ -134,16 +134,19 @@
                             </a>
                             <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                          
                             <div class="product-action">
-                                <form method="POST" action="{{ route('cart.add', $product) }}">
+                                {{-- <form method="POST" action="{{ route('cart.add', $product) }}">
                                     @csrf
                                     <button type="submit" class="btn btn-dark">
                                         <i class="fa fa-shopping-cart"></i> Add To Cart
                                     </button>
-                                </form>
+                                </form> --}}
+                                <a href="{{route('cart.add', $product->id)}}" class="btn btn-dark">
+                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                </a>
                             </div>
                         </div>
                         <div class="card-body text-center mt-3">
-                            <a class="h6 link" href="product.php">{{$product->name}}</a>
+                            <a class="h6 link" href="{{route('product_detail',$product->id)}}">{{$product->name}}</a>
                             <div class="price mt-2">
                                 <span class="h5"><strong>{{$product->price}}</strong></span>
                                 <span class="h6 text-underline"><del>$120</del></span>
