@@ -20,9 +20,15 @@
                     <div class="form-group">
                         <input type="text" name="email" class="form-control" placeholder="Email" required="required">
                     </div>
+                    
                     <div class="form-group">
                         <input type="password" name="password" class="form-control" placeholder="Password" required="required">
                     </div>
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     <div class="form-group small">
                         <a href="#" class="forgot-link">Forgot Password?</a>
                     </div> 

@@ -89,8 +89,21 @@ class HomeController extends Controller
             return redirect()->route('home');
         } else {
 
-            return back()->withInput()->withErrors(['email' => 'Invalid email or password']);
+            return back()->withInput()->with(['error' => 'Tài khoản hoặc mật khẩu sai. Vui lòng thử lại']);
         }
+    }
+
+    public function product_detail($id)
+    {
+        $product = Products::findOrFail($id);
+        
+        // dd($product->description);
+        return view('pages.product', [
+            'categories' => $this->categories,
+            'products' => $this->products,
+            'subcategories' => $this->subcategories,
+            'product'=>$product,
+        ]);
     }
 
 
@@ -167,7 +180,21 @@ class HomeController extends Controller
 
 
 
+    public function about(){
+        return view('pages.about-us',[
+            'categories' => $this->categories,
+            'products' => $this->products,
+            'subcategories' => $this->subcategories,
+        ]);
+    }
 
+    public function contact_us(){
+        return view('pages.contact-us',[
+            'categories' => $this->categories,
+            'products' => $this->products,
+            'subcategories' => $this->subcategories,
+        ]);
+    }
 
 
     public function logout(Request $request)

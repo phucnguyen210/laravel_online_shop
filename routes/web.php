@@ -97,9 +97,12 @@ Route::group(['prefix' => 'pages'], function () {
     Route::get('/login', [HomeController::class, 'login'])->name('login');
     Route::post('/login', [HomeController::class, 'login_store'])->name('login_form');
 
+    Route::get('/product-detail/{id}', [HomeController::class, 'product_detail'])->name('product_detail');
+    
+
     Route::get('/cart', [CartController::class, 'cart'])->name('cart');
     Route::post('/update-quick-cart', [CartController::class, 'updateQuickCart'])->name('update_cart');
-    Route::post('/add-to-cart/{product}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/add-to-cart/{product}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::delete('/remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
 
     Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
@@ -107,6 +110,11 @@ Route::group(['prefix' => 'pages'], function () {
 
     #sendmail
     // Route::get('/sendmail', [HomeController::class, 'send_mail'])->name('cart');
+
+
+    
+    Route::get('/about', [HomeController::class, 'about'])->name('about');
+    Route::get('/contact-us', [HomeController::class, 'contact_us'])->name('contact-us');
     
 
     Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
