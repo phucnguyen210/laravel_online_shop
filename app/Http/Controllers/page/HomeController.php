@@ -6,11 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Products;
 use App\Models\Subcategory;
+use App\Models\Orders;
+use App\Models\Order_detail;
 use Illuminate\Http\Request;
 use App\models\User;
-use App\models\CartItem;
+use App\models\shipping_address;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Session;
+
+
+use App\Mail\OrderPlaced;
+use Illuminate\Support\Facades\Mail;;
 
 class HomeController extends Controller
 {
@@ -86,68 +93,79 @@ class HomeController extends Controller
         }
     }
 
-    public function addToCart(Request $request, Products $product)
-    {
-        $productId = $product->id;
-        $productName = $product->name;
-        $productPrice = $product->price;
-        $productImage = $product->img;
-        $cartItems = $request->session()->get('cart', []);
 
-        foreach ($cartItems as &$cartItem) {
-            if ($cartItem['id'] === $productId) {
-                $cartItem['quantity']++;
-                $request->session()->put('cart', $cartItems);
-                return redirect()->back()->with('success', 'Số lượng sản phẩm trong giỏ hàng đã được cập nhật.');
-            }
+    public function checkout(Request $request)
+    {
+        if (!Auth::check()) {
+            // Người dùng chưa đăng nhập, chuyển hướng tới trang đăng nhập
+            return redirect()->route('login');
         }
 
-        $cartItems[] = [
-            'id' => $productId,
-            'name' => $productName,
-            'price' => $productPrice,
-            'img' => $productImage,
-            'quantity' => 1,
-        ];
-        $request->session()->put('cart', $cartItems);
-
-
-        return redirect()->back()->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
-    }
-
-
-
-    public function cart(Request $request)
-    {
-
         $cartItems = $request->session()->get('cart', []);
+        $subtotal = array_reduce($cartItems, function ($carry, $item) {
+            return $carry + ($item['price'] * $item['quantity']);
+        }, 0);
 
-        return view('pages.cart', [
+        $total = array_reduce($cartItems, function ($carry, $item) {
+            return $carry + ($item['price'] * $item['quantity']);
+        }, 0) + 20;
+
+
+        return view('pages.checkout', [
             'categories' => $this->categories,
             'products' => $this->products,
             'subcategories' => $this->subcategories,
-            'cartItems' => $cartItems
+            'cartItems' => $cartItems,
+            'total' => $total,
+            'subtotal' => $subtotal,
         ]);
     }
 
-    public function removeFromCart(Request $request, $productId)
+    public function form_checkout(Request $request)
     {
-        $cart = $request->session()->get('cart', []);
+        $user_id = auth()->id();
+        $shipping_address = new shipping_address();
+        $shipping_address->user_id = $user_id;
+        $shipping_address->first_name = $request->input('first_name');
+        $shipping_address->last_name = $request->input('last_name');
+        $shipping_address->email = $request->input('email');
+        $shipping_address->country = $request->input('country');
+        $shipping_address->address = $request->input('address');
+        $shipping_address->order_notes = $request->input('order_notes');
+        $shipping_address->mobile = $request->input('mobile');
+        $shipping_address->save();
 
-        if (empty($cart)) {
-            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống');
+        // $cartItems = session()->get('cartItems');
+        $cart = Session::get('cart', []);
+
+        $total = 0;
+
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
         }
 
-        foreach ($cart as $key => $item) {
-            if ($item['id'] === $productId) {
-                unset($cart[$key]);
-                $request->session()->put('cart', $cart);
-                return redirect()->back()->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng');
-            }
+        $order = Orders::create([
+            'user_id' => $user_id,
+            'total' => $total,
+        ]);
+        // dd($order->orde);
+
+        foreach ($cart as $item) {
+            Order_detail::create([
+                'order_id' => $order->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+            ]);
         }
 
-        return redirect()->back()->with('error', 'Không tìm thấy sản phẩm trong giỏ hàng');
+        Mail::to($shipping_address->email)->send(new OrderPlaced($order));
+
+        session()->forget('cart');
+        return redirect()->route('checkout')->with('success', 'đặt hàng thành công');
     }
+
+
 
 
 

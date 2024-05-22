@@ -11,6 +11,7 @@ use App\Http\Controllers\admin\UsersController;
 
 use App\Http\Controllers\page\HomeController;
 use App\Http\Controllers\page\UserController;
+use App\Http\Controllers\page\CartController;
 use Illuminate\Support\Facades\Route;
 
 use App\http\Middleware\AdminRole;
@@ -33,16 +34,16 @@ use App\http\Middleware\AdminRole;
 
 
 Route::group(['prefix' => 'admin'], function () {
-    Route::middleware([AdminRole::class])->group(function () {
+    Route::get('/login', [AdminLoginController::class, 'index'])->name('admin.login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login_post');
+    Route::middleware(['AdminRole'])->group(function () {
 
-        Route::get('/login', [AdminLoginController::class, 'index'])->name('admin.login');
-        Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login_post');
         Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
-        Route::get('/dashboard', [AdminLoginController::class, 'dashboard'])->name('admin.dashboard')->middleware('AdminRole');
+        Route::get('/dashboard', [AdminLoginController::class, 'dashboard'])->name('admin.dashboard');
 
 
-        Route::get('/category', [CategoryController::class, 'category'])->name('admin.category')->middleware('AdminRole');
-        Route::get('/create-category', [CategoryController::class, 'create_category'])->name('admin.create-category')->middleware('AdminRole');
+        Route::get('/category', [CategoryController::class, 'category'])->name('admin.category');
+        Route::get('/create-category', [CategoryController::class, 'create_category'])->name('admin.create-category');
         Route::post('/create-category', [CategoryController::class, 'store'])->name('admin.create-category');
         Route::get('/category/{id}/edit', [CategoryController::class, 'edit_category'])->name('admin.edit_category');
         Route::put('/category/{id}', [CategoryController::class, 'update'])->name('categories.update');
@@ -64,7 +65,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::delete('/brands/{id}delete', [BrandsController::class, 'delete'])->name('admin.delete_brands');
 
 
-        Route::get('/products', [ProductsController::class, 'products'])->name('admin.products')->middleware('AdminRole');
+        Route::get('/products', [ProductsController::class, 'products'])->name('admin.products');
         Route::get('/create-product', [ProductsController::class, 'create_product'])->name('admin.create-product');
         Route::post('/create-product', [ProductsController::class, 'store'])->name('admin.create-product');
         Route::get('/product/edit/{id}', [ProductsController::class, 'edit_products'])->name('admin.edit_products');
@@ -83,20 +84,30 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/orders', [OrdersController::class, 'orders'])->name('admin.orders');
         Route::get('/order_detail', [OrdersController::class, 'order_detail'])->name('admin.order_detail');
         Route::get('/discount', [AdminLoginController::class, 'discount'])->name('admin.discount');
-    })->withoutMiddleware([AdminRole::class]);
+    });
 });
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::group(['prefix' => 'pages'], function () {
+    #Login
     Route::get('/register', [HomeController::class, 'register'])->name('register');
     Route::post('/register', [HomeController::class, 'register_store'])->name('register_form');
     Route::get('/login', [HomeController::class, 'login'])->name('login');
     Route::post('/login', [HomeController::class, 'login_store'])->name('login_form');
 
-    Route::get('/cart', [HomeController::class, 'cart'])->name('cart');
-    Route::post('/add-to-cart/{product}', [HomeController::class, 'addToCart'])->name('cart.add');
-    Route::delete('/remove-from-cart/{id}', [HomeController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/cart', [CartController::class, 'cart'])->name('cart');
+    Route::post('/update-quick-cart', [CartController::class, 'updateQuickCart'])->name('update_cart');
+    Route::post('/add-to-cart/{product}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::delete('/remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+
+    Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [HomeController::class, 'form_checkout'])->name('form_checkout');
+
+    #sendmail
+    // Route::get('/sendmail', [HomeController::class, 'send_mail'])->name('cart');
+    
 
     Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 });

@@ -21,9 +21,9 @@ class ProductsController extends Controller
     public function products()
     {
         $products = Products::all();
-        foreach($products as $product){
-        // dd($product->img);
-            
+        foreach ($products as $product) {
+            // dd($product->img);
+
         }
 
         return view('admin.products', compact('products'));
@@ -40,20 +40,26 @@ class ProductsController extends Controller
 
     public function store(Request $request)
     {
+        $product = new Products;
 
         $validatedData = $request->validate([
             'name' => 'required|max:255',
+
         ]);
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName =  $image->getClientOriginalName();
+
+        if ($request->hasFile('img')) {
+            $image = $request->file('img');
+            $imageName = time() . '_' . $image->getClientOriginalName();
             $image->storeAs('public/img', $imageName);
+
+            // $image->storePubliclyAs('img', $imageName, 'public');
+
+            $publicPath = 'storage/img/' . $imageName;
+            $product->img = $publicPath;
         }
 
-        $product = new Products;
         $product->name = $validatedData['name'];
         $product->description = $request['description'];
-        $product->img = 'storage/img/' . $imageName;
         $product->price = $request['price'];
         $product->quantity = $request['quantity'];
         $product->code = mt_rand(100000, 999999);
@@ -66,6 +72,7 @@ class ProductsController extends Controller
         return redirect()->route('admin.products')
             ->with('success', 'Product created successfully');
     }
+
 
     public function edit_products($id)
     {
@@ -80,17 +87,17 @@ class ProductsController extends Controller
     public function update(Request $request, $id)
     {
         $product = Products::findOrFail($id);
-        
+
         if ($request->hasFile('img')) {
             $image = $request->file('img');
-            
             $imageName = time() . '_' . $image->getClientOriginalName();
-            
             $image->storeAs('public/img', $imageName);
-            $product->img = 'storage/img/' . $imageName;
+
+            // Đường dẫn đầy đủ đến ảnh trong thư mục public
+            $publicPath = 'storage/img/' . $imageName;
+            $product->img = $publicPath;
         }
-        
-        
+
         $product->name = $request['name'];
         $product->description = $request['description'];
         $product->price = $request['price'];
@@ -99,14 +106,14 @@ class ProductsController extends Controller
         $product->brand_id = $request['brand_id'];
         $product->category_id = $request['category_id'];
         $product->subcategory_id = $request['sub_category_id'];
-        $product->subcategory_id = $request['sub_category_id'];
-    
+
         // Lưu các thay đổi vào cơ sở dữ liệu
         $product->save();
-        
+
         // Chuyển hướng người dùng đến trang danh sách sản phẩm sau khi cập nhật thành công
         return redirect()->route('admin.products');
     }
+
 
 
     public function delete($id)

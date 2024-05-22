@@ -93,7 +93,7 @@
                                         <div class="card-body">
                                             <h2 class="h4 mb-3">Media</h2>								
                                                     <br>Drop files here or click to upload.<br><br>   
-                                                    <input type="file" name="image" class="form-control">                                         
+                                                    <input type="file" name="img" class="form-control">                                         
                                         </div>	                                                                      
                                     </div>
                                     <div class="card mb-3">

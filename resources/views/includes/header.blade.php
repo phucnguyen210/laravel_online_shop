@@ -43,6 +43,8 @@
 
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body data-instant-intensity="mousedown">
 

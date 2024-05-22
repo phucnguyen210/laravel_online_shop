@@ -96,7 +96,7 @@
 										@foreach($products as $product)
 											<tr>
 												<td>{{$product->id }}</td>
-												<td><img src="{{asset("storage/img/1715519754_gpu.webp")}}" class="img-thumbnail" width="50"></td>
+												<td><img src="{{asset($product->img)}}" class="img-thumbnail" width="50"></td>
 												<td><a href="#">{{$product->name}}</a></td>
 												<td>{{$product->price}}</td>
 												<td>{{$product->quantity}}</td>
